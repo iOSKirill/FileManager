@@ -15,7 +15,6 @@ class CatalogCell: UITableViewCell {
     
     lazy var nameCatalogLabel: UILabel = {
         let label = UILabel()
-        label.text = "Kirill"
         return label
     }()
     
