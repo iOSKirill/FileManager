@@ -8,6 +8,8 @@
 import UIKit
 import SnapKit
 
+//MARK: - Enum
+
 enum CatalogCellType {
     case folder(url: URL)
     case image(url: URL)
@@ -16,6 +18,7 @@ enum CatalogCellType {
 class ViewController: UIViewController {
 
     //MARK: - Outlet and Variables
+    
     let fileManager = FileManager.default
     let imagePicker = UIImagePickerController()
     lazy var currentCatalogURL: URL = {
@@ -37,6 +40,8 @@ class ViewController: UIViewController {
         return tableView
     }()
     
+    //MARK: - Method
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -45,8 +50,6 @@ class ViewController: UIViewController {
         reloadData()
         print(currentCatalogURL)
     }
-    
-    //MARK: - Method
     
     //Setup UITableView
     func setupTableView() {
@@ -160,7 +163,14 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(catalogObjectsURLS[indexPath.row].lastPathComponent)
+        switch catalogArray[indexPath.row] {
+        case .image(let url):
+            let imageVC = ImageViewController(nibName: ImageViewController.key, bundle: nil)
+            imageVC.imageCatalog.image = UIImage(contentsOfFile: url.relativePath)
+            present(imageVC, animated: true)
+        case .folder(let url):
+            print(url.lastPathComponent)
+        }
     }
 }
 

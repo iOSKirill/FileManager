@@ -10,6 +10,7 @@ import UIKit
 class CatalogImageCell: UITableViewCell {
     
     //MARK: - Outlet and Variables
+    
     static let key = "CatalogImageCell"
     
     lazy var thumbnailImage: UIImageView = {
@@ -18,6 +19,7 @@ class CatalogImageCell: UITableViewCell {
     }()
     
     //MARK: - Method
+    
     func setupImage() {
         contentView.addSubview(thumbnailImage)
         thumbnailImage.snp.makeConstraints { make in

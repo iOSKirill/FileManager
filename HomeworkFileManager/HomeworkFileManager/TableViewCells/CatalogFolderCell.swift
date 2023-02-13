@@ -11,6 +11,7 @@ import SnapKit
 class CatalogFolderCell: UITableViewCell {
     
     //MARK: - Outlet and Variables
+    
     static let key = "CatalogFolderCell"
     
     lazy var nameCatalogLabel: UILabel = {
@@ -26,6 +27,7 @@ class CatalogFolderCell: UITableViewCell {
     }()
 
     //MARK: - Method
+    
     func configure(with text: String) {
         nameCatalogLabel.text = text
     }

@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		EDEA0282299A103900F4201E /* CatalogImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDEA0280299A103900F4201E /* CatalogImageCell.swift */; };
 		EDEA0283299A103900F4201E /* CatalogImageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EDEA0281299A103900F4201E /* CatalogImageCell.xib */; };
+		EDEA0286299A1EFF00F4201E /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDEA0284299A1EFF00F4201E /* ImageViewController.swift */; };
+		EDEA0287299A1EFF00F4201E /* ImageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EDEA0285299A1EFF00F4201E /* ImageViewController.xib */; };
 		EDEA9FF129937EB8006DDB98 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDEA9FF029937EB8006DDB98 /* AppDelegate.swift */; };
 		EDEA9FF329937EB8006DDB98 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDEA9FF229937EB8006DDB98 /* SceneDelegate.swift */; };
 		EDEA9FF529937EB8006DDB98 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDEA9FF429937EB8006DDB98 /* ViewController.swift */; };
@@ -23,6 +25,8 @@
 /* Begin PBXFileReference section */
 		EDEA0280299A103900F4201E /* CatalogImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogImageCell.swift; sourceTree = "<group>"; };
 		EDEA0281299A103900F4201E /* CatalogImageCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CatalogImageCell.xib; sourceTree = "<group>"; };
+		EDEA0284299A1EFF00F4201E /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
+		EDEA0285299A1EFF00F4201E /* ImageViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageViewController.xib; sourceTree = "<group>"; };
 		EDEA9FED29937EB8006DDB98 /* HomeworkFileManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HomeworkFileManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EDEA9FF029937EB8006DDB98 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EDEA9FF229937EB8006DDB98 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -93,6 +97,8 @@
 				EDEAA00529940058006DDB98 /* CatalogFolderCell.xib */,
 				EDEA0280299A103900F4201E /* CatalogImageCell.swift */,
 				EDEA0281299A103900F4201E /* CatalogImageCell.xib */,
+				EDEA0284299A1EFF00F4201E /* ImageViewController.swift */,
+				EDEA0285299A1EFF00F4201E /* ImageViewController.xib */,
 			);
 			path = TableViewCells;
 			sourceTree = "<group>";
@@ -165,6 +171,7 @@
 				EDEA9FFA29937EBA006DDB98 /* Assets.xcassets in Resources */,
 				EDEA9FF829937EB8006DDB98 /* Main.storyboard in Resources */,
 				EDEA0283299A103900F4201E /* CatalogImageCell.xib in Resources */,
+				EDEA0287299A1EFF00F4201E /* ImageViewController.xib in Resources */,
 				EDEAA00729940058006DDB98 /* CatalogFolderCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -180,6 +187,7 @@
 				EDEA0282299A103900F4201E /* CatalogImageCell.swift in Sources */,
 				EDEA9FF129937EB8006DDB98 /* AppDelegate.swift in Sources */,
 				EDEA9FF329937EB8006DDB98 /* SceneDelegate.swift in Sources */,
+				EDEA0286299A1EFF00F4201E /* ImageViewController.swift in Sources */,
 				EDEAA00629940058006DDB98 /* CatalogFolderCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
