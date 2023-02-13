@@ -8,10 +8,10 @@
 import UIKit
 import SnapKit
 
-class CatalogCell: UITableViewCell {
+class CatalogFolderCell: UITableViewCell {
     
     //MARK: - Outlet and Variables
-    static let key = "CatalogCell"
+    static let key = "CatalogFolderCell"
     
     lazy var nameCatalogLabel: UILabel = {
         let label = UILabel()
@@ -26,12 +26,8 @@ class CatalogCell: UITableViewCell {
     }()
 
     //MARK: - Method
-    override func awakeFromNib() {
-        super.awakeFromNib()
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
+    func configure(with text: String) {
+        nameCatalogLabel.text = text
     }
     
     //Setup UILabel and UIImageView
