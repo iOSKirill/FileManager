@@ -70,7 +70,6 @@ class ViewController: UIViewController {
 
     //Custom Navigation Bar
     func configureItems() {
-        navigationItem.title = "Catalog Browser"
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             image: UIImage(systemName: "plus.circle"),
@@ -170,6 +169,10 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             present(imageVC, animated: true)
         case .folder(let url):
             print(url.lastPathComponent)
+            guard let folderVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MainCatalog") as? ViewController else { return }
+            folderVC.currentCatalogURL = url
+            folderVC.title = url.lastPathComponent
+            navigationController?.pushViewController(folderVC, animated: true)
         }
     }
 }
