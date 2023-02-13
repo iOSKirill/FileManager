@@ -16,6 +16,7 @@ class ImageViewController: UIViewController {
     
     lazy var imageCatalog: UIImageView = {
         let image = UIImageView()
+        image.contentMode = .scaleAspectFill
         return image
     }()
 

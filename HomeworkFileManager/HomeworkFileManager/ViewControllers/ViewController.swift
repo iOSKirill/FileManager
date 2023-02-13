@@ -28,7 +28,12 @@ class ViewController: UIViewController {
     private var catalogArray: [CatalogCellType] = []
         
     lazy var catalogObjectsURLS: [URL] = {
-        try! fileManager.contentsOfDirectory(at: currentCatalogURL, includingPropertiesForKeys: nil).filter{ $0.lastPathComponent != ".DS_Store" }
+        do {
+            let catalogURL = try fileManager.contentsOfDirectory(at: currentCatalogURL, includingPropertiesForKeys: nil).filter{ $0.lastPathComponent != ".DS_Store" }
+            return catalogURL
+        } catch {
+            fatalError("Unable to read directory")
+        }
     }()
     
     lazy var tableView: UITableView = {
@@ -48,7 +53,6 @@ class ViewController: UIViewController {
         setupTableView()
         configureItems()
         reloadData()
-        print(currentCatalogURL)
     }
     
     //Setup UITableView
@@ -84,12 +88,12 @@ class ViewController: UIViewController {
         let alertNewCatalog = UIAlertController(title: "Create a new catalog", message: "Print a name", preferredStyle: .alert)
         let okButton = UIAlertAction(title: "OK", style: .default) { _ in
             guard let nameCatalog = alertNewCatalog.textFields?.first?.text?.trimmingCharacters(in: NSCharacterSet.whitespaces), !nameCatalog.isEmpty else { return }
-            guard self.catalogObjectsURLS.contains(where: { $0.lastPathComponent == nameCatalog }) == false else {
+            guard !self.catalogObjectsURLS.contains(where: { $0.lastPathComponent == nameCatalog }) else {
                 self.addAlertDirectoryError()
                 return
             }
             
-            let newFolder = self.currentCatalogURL.appending(path: (nameCatalog + "/"))
+            let newFolder = self.currentCatalogURL.appending(path: "\(nameCatalog)/")
             try? self.fileManager.createDirectory(at: newFolder, withIntermediateDirectories: false)
             self.catalogObjectsURLS.append(newFolder)
             self.reloadData()
@@ -156,7 +160,6 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         case .folder(let url):
             guard let cell = tableView.dequeueReusableCell(withIdentifier: CatalogFolderCell.key, for: indexPath) as? CatalogFolderCell else { return UITableViewCell() }
             cell.nameCatalogLabel.text = url.lastPathComponent
-            print(url.lastPathComponent)
             return cell
         }
     }
@@ -168,7 +171,6 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             imageVC.imageCatalog.image = UIImage(contentsOfFile: url.relativePath)
             present(imageVC, animated: true)
         case .folder(let url):
-            print(url.lastPathComponent)
             guard let folderVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MainCatalog") as? ViewController else { return }
             folderVC.currentCatalogURL = url
             folderVC.title = url.lastPathComponent
