@@ -36,12 +36,28 @@ class ViewController: UIViewController {
         }
     }()
     
+    lazy var tableOrCollectionViewSegmentControl: UISegmentedControl = {
+        let items = ["TableView", "CollectionView"]
+        let segmentedControl = UISegmentedControl(items: items)
+        segmentedControl.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .normal)
+        segmentedControl.setTitleTextAttributes([.foregroundColor: UIColor(red: 55/255, green: 100/255, blue: 193/255, alpha: 1)], for: .selected)
+        segmentedControl.backgroundColor = UIColor(red: 55/255, green: 100/255, blue: 193/255, alpha: 1)
+        segmentedControl.selectedSegmentTintColor = .white
+        segmentedControl.layer.borderWidth = 1
+        segmentedControl.layer.borderColor = UIColor.white.cgColor
+        segmentedControl.selectedSegmentIndex = 0
+        segmentedControl.addTarget(self, action: #selector(segmentAction(_:)), for: .valueChanged)
+        view.addSubview(segmentedControl)
+        return segmentedControl
+    }()
+    
     lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(CatalogFolderCell.self, forCellReuseIdentifier: CatalogFolderCell.key)
         tableView.register(CatalogImageCell.self, forCellReuseIdentifier: CatalogImageCell.key)
+        view.addSubview(tableView)
         return tableView
     }()
     
@@ -50,20 +66,25 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupTableView()
+        setupConstraint()
         configureItems()
         reloadData()
+        print(currentCatalogURL)
     }
     
-    //Setup UITableView
-    func setupTableView() {
-        view.addSubview(tableView)
-        //make constraint
+    //Setup Constraint
+    func setupConstraint() {
         tableView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            make.top.equalToSuperview().inset(100)
+            make.top.equalToSuperview().inset(130)
             make.bottom.equalToSuperview()
         }
+        
+        tableOrCollectionViewSegmentControl.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(90)
+            make.leading.trailing.equalToSuperview().inset(16)
+        }
+        
     }
     
     func reloadData() {
@@ -71,6 +92,18 @@ class ViewController: UIViewController {
         catalogObjectsURLS.forEach { $0.hasDirectoryPath ? catalogArray.append(.folder(url: $0)) : catalogArray.append(.image(url: $0)) }
         tableView.reloadData()
     }
+    
+    //Segment Action
+    @objc func segmentAction(_ segmentedControl: UISegmentedControl) {
+          switch segmentedControl.selectedSegmentIndex {
+          case 0:
+              tableView.isHidden = false
+          case 1:
+              tableView.isHidden = true
+          default:
+              break
+          }
+      }
 
     //Custom Navigation Bar
     func configureItems() {
@@ -81,6 +114,7 @@ class ViewController: UIViewController {
             target: self,
             action: #selector(addAlertChooseAnAction))
         navigationItem.rightBarButtonItem?.tintColor = .white
+        navigationController?.navigationBar.tintColor = .white
     }
         
     //Add Alert with creating a new catalog
