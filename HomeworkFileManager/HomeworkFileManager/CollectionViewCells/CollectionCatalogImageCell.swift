@@ -31,6 +31,8 @@ class CollectionCatalogImageCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupImage()
+        contentView.clipsToBounds = true
+        contentView.layer.cornerRadius = 10
     }
     
     required init?(coder: NSCoder) {

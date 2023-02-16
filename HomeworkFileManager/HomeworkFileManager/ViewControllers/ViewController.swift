@@ -47,9 +47,9 @@ class ViewController: UIViewController {
         segmentedControl.selectedSegmentTintColor = .white
         segmentedControl.layer.borderWidth = 1
         segmentedControl.layer.borderColor = UIColor.white.cgColor
-        segmentedControl.selectedSegmentIndex = 0
         segmentedControl.addTarget(self, action: #selector(segmentAction(_:)), for: .valueChanged)
         view.addSubview(segmentedControl)
+        segmentedControl.selectedSegmentIndex = state
         return segmentedControl
     }()
     
@@ -66,7 +66,6 @@ class ViewController: UIViewController {
     lazy var collectionView: UICollectionView = {
         let layout  = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-//        layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -82,10 +81,10 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableOrCollectionViewSegmentControl.selectedSegmentIndex = state
         checkingFilesInDocuments()
         setupConstraint()
         configureItems()
+        switcherView()
         print(currentCatalogURL)
     }
     
@@ -126,20 +125,24 @@ class ViewController: UIViewController {
             make.leading.trailing.equalToSuperview().inset(16)
         }
     }
-
-    //Segment Action
+    
     @objc func segmentAction(_ segmentedControl: UISegmentedControl) {
-          switch segmentedControl.selectedSegmentIndex {
-          case 0:
-              tableView.isHidden = false
-              collectionView.isHidden = true
-          case 1:
-              tableView.isHidden = true
-              collectionView.isHidden = false
-          default:
-              break
-          }
+        switcherView()
+        state = segmentedControl.selectedSegmentIndex
       }
+    
+    func switcherView() {
+        switch tableOrCollectionViewSegmentControl.selectedSegmentIndex {
+        case 0:
+            tableView.isHidden = false
+            collectionView.isHidden = true
+        case 1:
+            tableView.isHidden = true
+            collectionView.isHidden = false
+        default:
+            break
+        }
+    }
 
     //Custom Navigation Bar
     func configureItems() {
@@ -261,6 +264,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             guard let folderVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MainCatalog") as? ViewController else { return }
             folderVC.currentCatalogURL = fileCatalog.filter({ $0.type == .folder})[indexPath.row].url
             folderVC.title = fileCatalog.filter({ $0.type == .folder})[indexPath.row].url.lastPathComponent
+            folderVC.state = tableOrCollectionViewSegmentControl.selectedSegmentIndex
             navigationController?.pushViewController(folderVC, animated: true)
         }
     }
@@ -326,10 +330,11 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
             guard let folderVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MainCatalog") as? ViewController else { return }
             folderVC.currentCatalogURL = fileCatalog.filter({ $0.type == .folder})[indexPath.row].url
             folderVC.title = fileCatalog.filter({ $0.type == .folder})[indexPath.row].url.lastPathComponent
+            folderVC.state = state
             navigationController?.pushViewController(folderVC, animated: true)
         }
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if indexPath.section == 0 {
             return CGSize(width: 100, height: 100)
@@ -345,5 +350,4 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
     }
-    
 }
