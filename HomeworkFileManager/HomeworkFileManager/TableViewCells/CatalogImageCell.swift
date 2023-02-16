@@ -9,7 +9,7 @@ import UIKit
 
 class CatalogImageCell: UITableViewCell {
     
-    //MARK: - Outlet and Variables
+    //MARK: - Outlet and Variables -
     
     static let key = "CatalogImageCell"
     
@@ -23,7 +23,7 @@ class CatalogImageCell: UITableViewCell {
     func setupImage() {
         contentView.addSubview(thumbnailImage)
         thumbnailImage.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+            make.leading.equalToSuperview()
             make.top.equalToSuperview()
             make.bottom.equalToSuperview()
         }

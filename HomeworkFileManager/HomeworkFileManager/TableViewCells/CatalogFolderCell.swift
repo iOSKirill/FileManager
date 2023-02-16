@@ -10,7 +10,7 @@ import SnapKit
 
 class CatalogFolderCell: UITableViewCell {
     
-    //MARK: - Outlet and Variables
+    //MARK: - Outlet and Variables -
     
     static let key = "CatalogFolderCell"
     
@@ -26,7 +26,7 @@ class CatalogFolderCell: UITableViewCell {
         return image
     }()
 
-    //MARK: - Method
+    //MARK: - Method -
     
     func configure(with text: String) {
         nameCatalogLabel.text = text

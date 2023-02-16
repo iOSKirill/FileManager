@@ -10,7 +10,7 @@ import SnapKit
 
 class ImageViewController: UIViewController {
     
-    //MARK: - Outlet and Variables
+    //MARK: - Outlet and Variables -
     
     static let key = "ImageViewController"
     
@@ -20,7 +20,7 @@ class ImageViewController: UIViewController {
         return image
     }()
 
-    //MARK: - Method
+    //MARK: - Method -
     
     override func viewDidLoad() {
         super.viewDidLoad()
