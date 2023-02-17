@@ -1,21 +1,23 @@
 //
-//  CatalogCell.swift
+//  CollectionCatalogFolderCell.swift
 //  HomeworkFileManager
 //
-//  Created by Kirill Manuilenko on 8.02.23.
+//  Created by Kirill Manuilenko on 16.02.23.
 //
 
 import UIKit
 import SnapKit
 
-class CatalogFolderCell: UITableViewCell {
+class CollectionCatalogFolderCell: UICollectionViewCell {
     
     //MARK: - Outlet and Variables -
     
-    static let key = "CatalogFolderCell"
+    static let key = "CollectionCatalogFolderCell"
     
     lazy var nameCatalogLabel: UILabel = {
         let label = UILabel()
+        label.textColor = .white
+        label.numberOfLines = 0
         return label
     }()
     
@@ -25,31 +27,32 @@ class CatalogFolderCell: UITableViewCell {
         image.tintColor = UIColor(red: 55/255, green: 150/255, blue: 193/255, alpha: 1)
         return image
     }()
-
+    
     //MARK: - Method -
     
-    
-    //Setup UILabel and UIImageView
     func setupLabelAndImage() {
         contentView.addSubview(nameCatalogLabel)
         contentView.addSubview(imageCatalog)
         imageCatalog.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview().inset(16)
-            make.leading.equalToSuperview().inset(16)
+            make.top.equalToSuperview().inset(5)
+            make.centerX.equalToSuperview()
         }
         nameCatalogLabel.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview().inset(16)
-            make.leading.equalTo(imageCatalog.snp.trailing).offset(8)
+            make.bottom.equalToSuperview().inset(5)
+            make.centerX.equalToSuperview()
         }
     }
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         setupLabelAndImage()
+        contentView.layer.cornerRadius = 10
+        contentView.backgroundColor = .systemIndigo
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
 
 }
