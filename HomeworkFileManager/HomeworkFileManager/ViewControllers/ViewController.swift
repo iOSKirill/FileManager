@@ -1,4 +1,4 @@
-//
+
 //  ViewController.swift
 //  HomeworkFileManager
 //
@@ -10,12 +10,7 @@ import SnapKit
 
 //MARK: - Enum -
 
-enum CatalogCellType {
-    case image
-    case folder
-}
-
-enum Headers: String {
+enum CatalogCellType: String {
     case image = "Images"
     case folder = "Folders"
 }
@@ -91,16 +86,9 @@ class ViewController: UIViewController {
     //Check File in Documents
     func checkingFilesInDocuments() {
         do {
-            let directoryContent = try fileManager.contentsOfDirectory(at: currentCatalogURL, includingPropertiesForKeys: nil)
-            for element in directoryContent where element.lastPathComponent != ".DS_Store" {
-                if element.hasDirectoryPath {
-                    let folderFile = File(type: .folder, url: element)
-                    fileCatalog.append(folderFile)
-                } else {
-                    let imageFile = File(type: .image, url: element)
-                    fileCatalog.append(imageFile)
-                }
-            }
+            let directoryContent = try fileManager.contentsOfDirectory(at: currentCatalogURL, includingPropertiesForKeys: nil).filter{ $0.lastPathComponent != ".DS_Store" }
+            directoryContent.map({ $0.hasDirectoryPath ? fileCatalog.append(File(type: .folder, url: $0)) : fileCatalog.append(File(type: .image, url: $0)) })
+//            directoryContent.forEach({  $0.hasDirectoryPath ? fileCatalog.append(File(type: .folder, url: $0)) : fileCatalog.append(File(type: .image, url: $0)) })
         } catch {
            fatalError("Unable to read directory")
         }
@@ -132,15 +120,12 @@ class ViewController: UIViewController {
       }
     
     func switcherView() {
-        switch tableOrCollectionViewSegmentControl.selectedSegmentIndex {
-        case 0:
-            tableView.isHidden = false
-            collectionView.isHidden = true
-        case 1:
+        if tableOrCollectionViewSegmentControl.selectedSegmentIndex == 1 {
             tableView.isHidden = true
             collectionView.isHidden = false
-        default:
-            break
+        } else {
+            tableView.isHidden = false
+            collectionView.isHidden = true
         }
     }
 
@@ -234,9 +219,9 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
     //Name section
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 0, fileCatalog.filter({ $0.type == .image}).count > 0 {
-            return Headers.image.rawValue
+            return CatalogCellType.image.rawValue
         } else if section == 1, fileCatalog.filter({ $0.type == .folder }).count > 0 {
-            return Headers.folder.rawValue
+            return CatalogCellType.folder.rawValue
         } else {
             return ""
         }
@@ -264,7 +249,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             guard let folderVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MainCatalog") as? ViewController else { return }
             folderVC.currentCatalogURL = fileCatalog.filter({ $0.type == .folder})[indexPath.row].url
             folderVC.title = fileCatalog.filter({ $0.type == .folder})[indexPath.row].url.lastPathComponent
-            folderVC.state = tableOrCollectionViewSegmentControl.selectedSegmentIndex
+            folderVC.state = state
             navigationController?.pushViewController(folderVC, animated: true)
         }
     }

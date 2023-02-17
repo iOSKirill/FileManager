@@ -10,6 +10,8 @@ import SnapKit
 
 class CollectionCatalogFolderCell: UICollectionViewCell {
     
+    //MARK: - Outlet and Variables -
+    
     static let key = "CollectionCatalogFolderCell"
     
     lazy var nameCatalogLabel: UILabel = {
@@ -25,6 +27,8 @@ class CollectionCatalogFolderCell: UICollectionViewCell {
         image.tintColor = UIColor(red: 55/255, green: 150/255, blue: 193/255, alpha: 1)
         return image
     }()
+    
+    //MARK: - Method -
     
     func setupLabelAndImage() {
         contentView.addSubview(nameCatalogLabel)

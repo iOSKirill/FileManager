@@ -8,6 +8,8 @@
 import UIKit
 
 class CollectionCatalogImageCell: UICollectionViewCell {
+    
+    //MARK: - Outlet and Variables -
 
     static let key = "CollectionCatalogImageCell"
     
@@ -16,7 +18,7 @@ class CollectionCatalogImageCell: UICollectionViewCell {
         return image
     }()
     
-    //MARK: - Method
+    //MARK: - Method -
     
     func setupImage() {
         contentView.addSubview(thumbnailImage)
