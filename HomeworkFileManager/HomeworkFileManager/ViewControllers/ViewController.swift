@@ -120,13 +120,8 @@ class ViewController: UIViewController {
       }
     
     func switcherView() {
-        if tableOrCollectionViewSegmentControl.selectedSegmentIndex == 1 {
-            tableView.isHidden = true
-            collectionView.isHidden = false
-        } else {
-            tableView.isHidden = false
-            collectionView.isHidden = true
-        }
+        tableView.isHidden = tableOrCollectionViewSegmentControl.selectedSegmentIndex == 1
+        collectionView.isHidden = tableOrCollectionViewSegmentControl.selectedSegmentIndex != 1
     }
 
     //Custom Navigation Bar
