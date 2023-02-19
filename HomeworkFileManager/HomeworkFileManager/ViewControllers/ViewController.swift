@@ -29,13 +29,7 @@ class ViewController: UIViewController {
     var addChooseAnButton = UIBarButtonItem()
     var addCellSelectionButton = UIBarButtonItem()
     var addCellSelectionFillButton = UIBarButtonItem()
-    var deleteSelectedSellButton = UIBarButtonItem() {
-        didSet {
-            if arrayURlDelete.count > 0 {
-                deleteSelectedSellButton.isEnabled = true
-            }
-        }
-    }
+    var addDeleteSelectedSellButton = UIBarButtonItem()
     var selectedCellsArray: [IndexPath] = []
     var arrayURlDelete: [URL] = []
     var fileCatalog: [File] = []
@@ -140,37 +134,26 @@ class ViewController: UIViewController {
     func configureItems() {
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         
-//        let chooseAnButton : UIButton = UIButton.init(type: .custom)
-//        chooseAnButton.setImage(UIImage(systemName: "plus.circle"), for: .normal)
-//        chooseAnButton.addTarget(self, action: #selector(addAlertChooseAnAction), for: .touchUpInside)
-//        chooseAnButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-//        addChooseAnButton = UIBarButtonItem(customView: chooseAnButton)
+        let chooseAnButton : UIButton = UIButton.init(type: .custom)
+        chooseAnButton.setImage(UIImage(systemName: "plus.circle"), for: .normal)
+        chooseAnButton.addTarget(self, action: #selector(addAlertChooseAnAction), for: .touchUpInside)
+        addChooseAnButton = UIBarButtonItem(customView: chooseAnButton)
         
-        addChooseAnButton = UIBarButtonItem(
-            image: UIImage(systemName: "plus.circle"),
-            style: .plain,
-            target: self,
-            action: #selector(addAlertChooseAnAction))
+        let cellSelectionButton : UIButton = UIButton.init(type: .custom)
+        cellSelectionButton.setImage(UIImage(systemName: "checkmark.circle"), for: .normal)
+        cellSelectionButton.addTarget(self, action: #selector(cellSelectionAction), for: .touchUpInside)
+        addCellSelectionButton = UIBarButtonItem(customView: cellSelectionButton)
         
-        addCellSelectionButton = UIBarButtonItem(
-            image: UIImage(systemName: "checkmark.circle"),
-            style: .plain,
-            target: self,
-            action: #selector(cellSelectionAction))
+        let cellSelectionFillButton : UIButton = UIButton.init(type: .custom)
+        cellSelectionFillButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
+        cellSelectionFillButton.addTarget(self, action: #selector(removeSelectedSellAction), for: .touchUpInside)
+        addCellSelectionFillButton = UIBarButtonItem(customView: cellSelectionFillButton)
         
-        addCellSelectionFillButton = UIBarButtonItem(
-            image: UIImage(systemName: "checkmark.circle.fill"),
-            style: .done,
-            target: self,
-            action: #selector(removeSelectedSellAction))
-        
-        deleteSelectedSellButton = UIBarButtonItem(
-            image: UIImage(systemName: "trash.circle"),
-            style: .done,
-            target: self,
-            action: #selector(deleteSelectedSellAction))
-        deleteSelectedSellButton.isEnabled = false
-        
+        let deleteSelectedSellButton : UIButton = UIButton.init(type: .custom)
+        deleteSelectedSellButton.setImage(UIImage(systemName: "trash.circle"), for: .normal)
+        deleteSelectedSellButton.addTarget(self, action: #selector(deleteSelectedSellAction), for: .touchUpInside)
+        addDeleteSelectedSellButton = UIBarButtonItem(customView: deleteSelectedSellButton)
+
         navigationItem.rightBarButtonItems = [addChooseAnButton, addCellSelectionButton]
         navigationItem.rightBarButtonItem?.tintColor = .white
         navigationController?.navigationBar.tintColor = .white
@@ -209,7 +192,7 @@ class ViewController: UIViewController {
     
     //Cell Selection
     @objc func cellSelectionAction() {
-        navigationItem.setRightBarButtonItems([addChooseAnButton, addCellSelectionFillButton,deleteSelectedSellButton], animated: false)
+        navigationItem.setRightBarButtonItems([addChooseAnButton, addCellSelectionFillButton,addDeleteSelectedSellButton], animated: false)
         addChooseAnButton.isEnabled = false
         tableView.allowsMultipleSelection = true
         collectionView.allowsMultipleSelection = true
