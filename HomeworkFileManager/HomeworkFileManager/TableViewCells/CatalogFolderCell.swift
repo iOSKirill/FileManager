@@ -19,6 +19,13 @@ class CatalogFolderCell: UITableViewCell {
         return label
     }()
     
+    lazy var imageSelect: UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(systemName: "checkmark")
+        image.tintColor = UIColor(red: 55/255, green: 150/255, blue: 193/255, alpha: 1)
+        return image
+    }()
+    
     lazy var imageCatalog: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(systemName: "folder.fill")
@@ -33,6 +40,7 @@ class CatalogFolderCell: UITableViewCell {
     func setupLabelAndImage() {
         contentView.addSubview(nameCatalogLabel)
         contentView.addSubview(imageCatalog)
+        contentView.addSubview(imageSelect)
         imageCatalog.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview().inset(16)
             make.leading.equalToSuperview().inset(16)
@@ -40,6 +48,16 @@ class CatalogFolderCell: UITableViewCell {
         nameCatalogLabel.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview().inset(16)
             make.leading.equalTo(imageCatalog.snp.trailing).offset(8)
+        }
+        imageSelect.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview().inset(16)
+            make.trailing.equalToSuperview().inset(16)
+        }
+    }
+    
+    override var isSelected: Bool {
+        didSet {
+            imageSelect.isHidden = isSelected ? false : true
         }
     }
     
