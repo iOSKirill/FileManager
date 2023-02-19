@@ -165,8 +165,10 @@ class ViewController: UIViewController {
         addChooseAnButton.isEnabled = true
         tableView.allowsMultipleSelection = false
         collectionView.allowsMultipleSelection = false
+        //Deselect
         for index in selectedCellsArray {
-            tableView.deselectRow(at: index, animated: false)
+            tableView.deselectRow(at: index, animated: true)
+            collectionView.deselectItem(at: index, animated: true)
         }
         arrayURlDelete.removeAll()
     }
@@ -193,6 +195,7 @@ class ViewController: UIViewController {
     //Cell Selection
     @objc func cellSelectionAction() {
         navigationItem.setRightBarButtonItems([addChooseAnButton, addCellSelectionFillButton,addDeleteSelectedSellButton], animated: false)
+        addDeleteSelectedSellButton.isEnabled = false
         addChooseAnButton.isEnabled = false
         tableView.allowsMultipleSelection = true
         collectionView.allowsMultipleSelection = true
@@ -324,11 +327,23 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
                 if !arrayURlDelete.contains(imageDelete) {
                     arrayURlDelete.append(imageDelete)
                 }
+                collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .bottom)
+                if arrayURlDelete.count > 0 {
+                    addDeleteSelectedSellButton.isEnabled = true
+                } else {
+                    addDeleteSelectedSellButton.isEnabled = false
+                }
             } else {
                 selectedCellsArray.append(indexPath)
                 let folderDelete = fileCatalog.filter({ $0.type == .folder})[indexPath.row].url
                 if !arrayURlDelete.contains(folderDelete) {
                     arrayURlDelete.append(folderDelete)
+                }
+                collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .bottom)
+                if arrayURlDelete.count > 0 {
+                    addDeleteSelectedSellButton.isEnabled = true
+                } else {
+                    addDeleteSelectedSellButton.isEnabled = false
                 }
             }
 
@@ -340,12 +355,19 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         if indexPath.section == 0 {
             let imageDelete = fileCatalog.filter({ $0.type == .image})[indexPath.row].url
             arrayURlDelete = arrayURlDelete.filter({ $0 != imageDelete })
+            if arrayURlDelete.count == 0 {
+                addDeleteSelectedSellButton.isEnabled = false
+            }
+            collectionView.deselectItem(at: indexPath, animated: true)
         } else {
             let folderDelete = fileCatalog.filter({ $0.type == .folder})[indexPath.row].url
             arrayURlDelete = arrayURlDelete.filter({ $0 != folderDelete })
+            if arrayURlDelete.count == 0 {
+                addDeleteSelectedSellButton.isEnabled = false
+            }
+            collectionView.deselectItem(at: indexPath, animated: true)
         }
     }
-
 }
 
 extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
@@ -413,11 +435,23 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
                 if !arrayURlDelete.contains(imageDelete) {
                     arrayURlDelete.append(imageDelete)
                 }
+                tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+                if arrayURlDelete.count > 0 {
+                    addDeleteSelectedSellButton.isEnabled = true
+                } else {
+                    addDeleteSelectedSellButton.isEnabled = false
+                }
             } else {
                 selectedCellsArray.append(indexPath)
                 let folderDelete = fileCatalog.filter({ $0.type == .folder})[indexPath.row].url
                 if !arrayURlDelete.contains(folderDelete) {
                     arrayURlDelete.append(folderDelete)
+                }
+                tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+                if arrayURlDelete.count > 0 {
+                    addDeleteSelectedSellButton.isEnabled = true
+                } else {
+                    addDeleteSelectedSellButton.isEnabled = false
                 }
             }
         }
@@ -443,9 +477,17 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         if indexPath.section == 0 {
             let imageDelete = fileCatalog.filter({ $0.type == .image})[indexPath.row].url
             arrayURlDelete = arrayURlDelete.filter({ $0 != imageDelete })
+            if arrayURlDelete.count == 0 {
+                addDeleteSelectedSellButton.isEnabled = false
+            }
+            tableView.deselectRow(at: indexPath, animated: true)
         } else {
             let folderDelete = fileCatalog.filter({ $0.type == .folder})[indexPath.row].url
             arrayURlDelete = arrayURlDelete.filter({ $0 != folderDelete })
+            if arrayURlDelete.count == 0 {
+                addDeleteSelectedSellButton.isEnabled = false
+            }
+            tableView.deselectRow(at: indexPath, animated: true)
         }
     }
    
