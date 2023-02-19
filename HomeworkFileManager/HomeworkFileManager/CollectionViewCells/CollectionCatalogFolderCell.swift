@@ -28,6 +28,7 @@ class CollectionCatalogFolderCell: UICollectionViewCell {
         return image
     }()
     
+    
     //MARK: - Method -
     
     func setupLabelAndImage() {
@@ -40,6 +41,14 @@ class CollectionCatalogFolderCell: UICollectionViewCell {
         nameCatalogLabel.snp.makeConstraints { make in
             make.bottom.equalToSuperview().inset(5)
             make.centerX.equalToSuperview()
+        }
+    }
+    
+    override var isSelected: Bool {
+        didSet {
+            self.layer.borderWidth = isSelected ? 2 : 0
+            self.layer.borderColor = UIColor.red.cgColor
+            self.layer.cornerRadius = 10
         }
     }
     

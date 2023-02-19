@@ -30,6 +30,14 @@ class CollectionCatalogImageCell: UICollectionViewCell {
         }
     }
     
+    override var isSelected: Bool {
+        didSet {
+            self.layer.borderWidth = isSelected ? 2 : 0
+            self.layer.borderColor = UIColor.red.cgColor
+            self.layer.cornerRadius = 10
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupImage()

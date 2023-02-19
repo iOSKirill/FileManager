@@ -18,6 +18,13 @@ class CatalogImageCell: UITableViewCell {
         return image
     }()
     
+    lazy var imageSelect: UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(systemName: "checkmark")
+        image.tintColor = UIColor(red: 55/255, green: 150/255, blue: 193/255, alpha: 1)
+        return image
+    }()
+    
     //MARK: - Method
     
     func setupImage() {
@@ -32,6 +39,12 @@ class CatalogImageCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupImage()
+    }
+    
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+        imageSelect.isHidden = isSelected ? false : true
+        
     }
     
     required init?(coder: NSCoder) {

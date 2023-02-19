@@ -55,11 +55,13 @@ class CatalogFolderCell: UITableViewCell {
         }
     }
     
-    override var isSelected: Bool {
-        didSet {
-            imageSelect.isHidden = isSelected ? false : true
-        }
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+        imageSelect.isHidden = isSelected ? false : true
+        
     }
+    
+   
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
