@@ -29,10 +29,15 @@ class CatalogImageCell: UITableViewCell {
     
     func setupImage() {
         contentView.addSubview(thumbnailImage)
+        contentView.addSubview(imageSelect)
         thumbnailImage.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.top.equalToSuperview()
             make.bottom.equalToSuperview()
+        }
+        imageSelect.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview().inset(16)
+            make.trailing.equalToSuperview().inset(16)
         }
     }
     
@@ -43,7 +48,8 @@ class CatalogImageCell: UITableViewCell {
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        imageSelect.isHidden = isSelected ? false : true
+        self.selectionStyle = .none
+        imageSelect.isHidden = !isSelected
         
     }
     

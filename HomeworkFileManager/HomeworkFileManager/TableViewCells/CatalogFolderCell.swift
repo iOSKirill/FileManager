@@ -35,7 +35,6 @@ class CatalogFolderCell: UITableViewCell {
 
     //MARK: - Method -
     
-    
     //Setup UILabel and UIImageView
     func setupLabelAndImage() {
         contentView.addSubview(nameCatalogLabel)
@@ -57,11 +56,9 @@ class CatalogFolderCell: UITableViewCell {
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        imageSelect.isHidden = isSelected ? false : true
-        
+        self.selectionStyle = .none
+        imageSelect.isHidden = !isSelected
     }
-    
-   
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
