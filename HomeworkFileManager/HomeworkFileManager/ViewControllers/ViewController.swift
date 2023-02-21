@@ -90,6 +90,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        addAlertSecurity()
         checkingFilesInDocuments()
         setupConstraint()
         configureItems()
@@ -221,7 +222,6 @@ class ViewController: UIViewController {
                 self.addAlertDirectoryError()
                 return
             }
-            
             let newFolder = self.currentCatalogURL.appending(path: nameCatalog)
             try? self.fileManager.createDirectory(at: newFolder, withIntermediateDirectories: false)
             let folderFile = File(type: .folder, url: newFolder)
@@ -272,6 +272,31 @@ class ViewController: UIViewController {
         alertActions.addAction(cancelButton)
         present(alertActions, animated: true)
     }
+    
+    //Add Alert Set Password
+    func addAlertSecurity() {
+        let alertSecurity = UIAlertController(title: "Security", message: "Do you want to set a password?", preferredStyle: .alert)
+        let setPasswordButton = UIAlertAction(title: "Set", style: .default)
+        let cancelButton = UIAlertAction(title: "Cancel", style: .destructive)
+        alertSecurity.addTextField { textField in
+            textField.placeholder = "Password"
+        }
+        alertSecurity.addAction(setPasswordButton)
+        alertSecurity.addAction(cancelButton)
+        alertSecurity.preferredAction = setPasswordButton
+        present(alertSecurity, animated: true)
+    }
+    
+    //Add Alert Access denied
+    func addAlertAccessDenied() {
+        let alertAccessDenied = UIAlertController(title: "Access denied", message: "Your password?", preferredStyle: .alert)
+        let okButton = UIAlertAction(title: "OK", style: .default)
+        alertAccessDenied.addTextField { textField in
+            textField.placeholder = "Password"
+        }
+        alertAccessDenied.addAction(okButton)
+        present(alertAccessDenied, animated: true)
+    }
 }
 
 
@@ -321,6 +346,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         
         switch selectionCellsState {
         case .off:
+            tableView.deselectRow(at: indexPath, animated: true)
             if indexPath.section == 0 {
                 let imageVC = ImageViewController(nibName: ImageViewController.key, bundle: nil)
                 imageVC.imageCatalog.image = UIImage(contentsOfFile: fileCatalog.filter({ $0.type == .image})[indexPath.row].url.path)
@@ -417,6 +443,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch selectionCellsState {
         case .off:
+            collectionView.deselectItem(at: indexPath, animated: false)
             if indexPath.section == 0 {
                 let imageVC = ImageViewController(nibName: ImageViewController.key, bundle: nil)
                 imageVC.imageCatalog.image = UIImage(contentsOfFile: fileCatalog.filter({ $0.type == .image})[indexPath.row].url.path)
