@@ -96,13 +96,7 @@ class ViewController: UIViewController {
         setupConstraint()
         configureItems()
         switcherView()
-        checkingPasswordInMemory()
         print(currentCatalogURL)
-    }
-    
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        checkingPasswordInMemory()
     }
     
     //Check File in Documents
@@ -148,6 +142,7 @@ class ViewController: UIViewController {
 
     //Custom Navigation Bar
     func configureItems() {
+        navigationItem.title = "\(currentCatalogURL.lastPathComponent.description)"
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         
         let chooseAnButton : UIButton = UIButton.init(type: .custom)
@@ -384,7 +379,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             if indexPath.section == 0 {
                 let imageVC = ImageViewController(nibName: ImageViewController.key, bundle: nil)
                 imageVC.imageCatalog.image = UIImage(contentsOfFile: fileCatalog.filter({ $0.type == .image})[indexPath.row].url.path)
-                present(imageVC, animated: true)
+                    present(imageVC, animated: true)
             } else {
                 guard let folderVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MainCatalog") as? ViewController else { return }
                 folderVC.currentCatalogURL = fileCatalog.filter({ $0.type == .folder})[indexPath.row].url

@@ -13,9 +13,11 @@ class ImageViewController: UIViewController {
     //MARK: - Outlet and Variables -
     
     static let key = "ImageViewController"
+    var imageArray: [UIImage] = []
     
     lazy var imageCatalog: UIImageView = {
-        let image = UIImageView()
+        var image = UIImageView()
+
         image.contentMode = .scaleAspectFill
         return image
     }()
@@ -59,7 +61,6 @@ class ImageViewController: UIViewController {
             make.leading.equalTo(imageScrollView.snp.leading)
             make.trailing.equalTo(imageScrollView.snp.trailing)
             make.centerY.equalTo(imageScrollView.snp.centerY)
-          
             make.width.equalTo(imageScrollView.snp.width)
         }
         
@@ -75,7 +76,7 @@ class ImageViewController: UIViewController {
 extension ImageViewController: UIScrollViewDelegate {
 
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        imageCatalog
+        imageStackView
     }
 }
 
