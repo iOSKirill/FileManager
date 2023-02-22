@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import KeychainSwift
 
 //MARK: - Enum -
 
@@ -32,6 +33,7 @@ class ViewController: UIViewController {
     //MARK: - Outlet and Variables -
     
     let fileManager = FileManager.default
+    let keyChain = KeychainSwift()
     let imagePicker = UIImagePickerController()
     var addChooseAnButton = UIBarButtonItem()
     var addCellSelectionButton = UIBarButtonItem()
@@ -86,16 +88,21 @@ class ViewController: UIViewController {
     }()
     
     //MARK: - Method -
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        addAlertSecurity()
+ 
         checkingFilesInDocuments()
         setupConstraint()
         configureItems()
         switcherView()
+        checkingPasswordInMemory()
         print(currentCatalogURL)
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        checkingPasswordInMemory()
     }
     
     //Check File in Documents
@@ -276,7 +283,10 @@ class ViewController: UIViewController {
     //Add Alert Set Password
     func addAlertSecurity() {
         let alertSecurity = UIAlertController(title: "Security", message: "Do you want to set a password?", preferredStyle: .alert)
-        let setPasswordButton = UIAlertAction(title: "Set", style: .default)
+        let setPasswordButton = UIAlertAction(title: "Set", style: .default) { _ in
+            guard let password = alertSecurity.textFields?.first?.text, !password.isEmpty else { return }
+            self.keyChain.set(password, forKey: "Password")
+        }
         let cancelButton = UIAlertAction(title: "Cancel", style: .destructive)
         alertSecurity.addTextField { textField in
             textField.placeholder = "Password"
@@ -290,12 +300,36 @@ class ViewController: UIViewController {
     //Add Alert Access denied
     func addAlertAccessDenied() {
         let alertAccessDenied = UIAlertController(title: "Access denied", message: "Your password?", preferredStyle: .alert)
-        let okButton = UIAlertAction(title: "OK", style: .default)
+        let okButton = UIAlertAction(title: "OK", style: .default) { _ in
+            guard let password = alertAccessDenied.textFields?.first?.text, !password.isEmpty, password == self.keyChain.get("Password") else {
+                self.errorPassword()
+                return
+            }
+        }
         alertAccessDenied.addTextField { textField in
             textField.placeholder = "Password"
         }
         alertAccessDenied.addAction(okButton)
         present(alertAccessDenied, animated: true)
+    }
+    
+    //Add Alert Error Password
+    func errorPassword() {
+        let alertErrorPassword = UIAlertController(title: "Error", message: "Password is wrong", preferredStyle: .alert)
+        let okButton = UIAlertAction(title: "OK", style: .default) { _ in
+            self.addAlertAccessDenied()
+        }
+        alertErrorPassword.addAction(okButton)
+        present(alertErrorPassword, animated: true)
+    }
+    
+    //Checking if the password is in memory
+    func checkingPasswordInMemory() {
+        guard let passwordKeyChain = keyChain.get("Password"), !passwordKeyChain.isEmpty else {
+            addAlertSecurity()
+            return
+        }
+        addAlertAccessDenied()
     }
 }
 
