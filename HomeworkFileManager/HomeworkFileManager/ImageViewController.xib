@@ -10,6 +10,8 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ImageViewController" customModule="HomeworkFileManager" customModuleProvider="target">
             <connections>
+                <outlet property="scrollView" destination="hp5-mP-q7Y" id="ezN-dF-PZo"/>
+                <outlet property="stackView" destination="0eW-CV-qlB" id="6tW-6z-OJg"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -17,8 +19,44 @@
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
             <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" maximumZoomScale="10" translatesAutoresizingMaskIntoConstraints="NO" id="hp5-mP-q7Y">
+                    <rect key="frame" x="0.0" y="59" width="393" height="759"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="60t-pO-2H9">
+                            <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                            <subviews>
+                                <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="0eW-CV-qlB">
+                                    <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                </stackView>
+                            </subviews>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <constraints>
+                                <constraint firstItem="0eW-CV-qlB" firstAttribute="leading" secondItem="60t-pO-2H9" secondAttribute="leading" id="5bj-nh-Xny"/>
+                                <constraint firstAttribute="trailing" secondItem="0eW-CV-qlB" secondAttribute="trailing" id="gGj-Mp-qDz"/>
+                                <constraint firstItem="0eW-CV-qlB" firstAttribute="top" secondItem="60t-pO-2H9" secondAttribute="top" id="kQm-v8-YcI"/>
+                                <constraint firstAttribute="bottom" secondItem="0eW-CV-qlB" secondAttribute="bottom" id="niZ-cL-SKH"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <constraints>
+                        <constraint firstAttribute="bottom" secondItem="60t-pO-2H9" secondAttribute="bottom" id="Ekr-OI-MlP"/>
+                        <constraint firstItem="60t-pO-2H9" firstAttribute="top" secondItem="hp5-mP-q7Y" secondAttribute="top" id="MRe-7n-OxX"/>
+                        <constraint firstItem="60t-pO-2H9" firstAttribute="leading" secondItem="hp5-mP-q7Y" secondAttribute="leading" id="byF-Un-3Vr"/>
+                        <constraint firstAttribute="trailing" secondItem="60t-pO-2H9" secondAttribute="trailing" id="kHC-q4-ATn"/>
+                    </constraints>
+                </scrollView>
+            </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="hp5-mP-q7Y" secondAttribute="bottom" id="DuH-oY-MxP"/>
+                <constraint firstItem="60t-pO-2H9" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" priority="250" id="Fmr-pj-39q"/>
+                <constraint firstItem="hp5-mP-q7Y" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="XP6-Ju-8Aq"/>
+                <constraint firstItem="hp5-mP-q7Y" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="uTa-My-z7L"/>
+                <constraint firstItem="60t-pO-2H9" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" priority="250" id="waF-c4-9Pn"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="hp5-mP-q7Y" secondAttribute="trailing" id="xLE-el-TG8"/>
+            </constraints>
             <point key="canvasLocation" x="123" y="21"/>
         </view>
     </objects>

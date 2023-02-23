@@ -13,12 +13,10 @@ class ImageViewController: UIViewController {
     //MARK: - Outlet and Variables -
     
     static let key = "ImageViewController"
+    var imageArray: [UIImage] = []
     
-    lazy var imageCatalog: UIImageView = {
-        let image = UIImageView()
-        image.contentMode = .scaleAspectFill
-        return image
-    }()
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var stackView: UIStackView!
 
     //MARK: - Method -
     
@@ -28,12 +26,24 @@ class ImageViewController: UIViewController {
     }
     
     func setupImage() {
-        view.addSubview(imageCatalog)
-        imageCatalog.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().inset(50)
+        scrollView.delegate = self
+        imageArray.forEach { image in
+            let imageView = UIImageView()
+            imageView.contentMode = .scaleAspectFit
+            imageView.image = image
+            stackView.addArrangedSubview(imageView)
+            imageView.snp.makeConstraints { make in
+                make.width.equalTo(view)
+                make.height.equalTo(view).inset(50)
+            }
         }
     }
-
 }
+
+extension ImageViewController: UIScrollViewDelegate {
+
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        stackView
+    }
+}
+

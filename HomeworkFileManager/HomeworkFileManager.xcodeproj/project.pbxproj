@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		ED10966129A4FE68002AFA43 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = ED10966029A4FE68002AFA43 /* KeychainSwift */; };
 		EDD17CA9299E55FD00412ED5 /* CollectionCatalogFolderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD17CA7299E55FD00412ED5 /* CollectionCatalogFolderCell.swift */; };
 		EDD17CAA299E55FD00412ED5 /* CollectionCatalogFolderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EDD17CA8299E55FD00412ED5 /* CollectionCatalogFolderCell.xib */; };
 		EDD17CAD299E5EA200412ED5 /* CollectionCatalogImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD17CAB299E5EA200412ED5 /* CollectionCatalogImageCell.swift */; };
@@ -52,6 +53,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ED10966129A4FE68002AFA43 /* KeychainSwift in Frameworks */,
 				EDEAA00C29940425006DDB98 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -141,6 +143,7 @@
 			name = HomeworkFileManager;
 			packageProductDependencies = (
 				EDEAA00B29940425006DDB98 /* SnapKit */,
+				ED10966029A4FE68002AFA43 /* KeychainSwift */,
 			);
 			productName = HomeworkFileManager;
 			productReference = EDEA9FED29937EB8006DDB98 /* HomeworkFileManager.app */;
@@ -172,6 +175,7 @@
 			mainGroup = EDEA9FE429937EB8006DDB98;
 			packageReferences = (
 				EDEAA00A29940424006DDB98 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				ED10965F29A4FE68002AFA43 /* XCRemoteSwiftPackageReference "keychain-swift" */,
 			);
 			productRefGroup = EDEA9FEE29937EB8006DDB98 /* Products */;
 			projectDirPath = "";
@@ -432,6 +436,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		ED10965F29A4FE68002AFA43 /* XCRemoteSwiftPackageReference "keychain-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/evgenyneu/keychain-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 20.0.0;
+			};
+		};
 		EDEAA00A29940424006DDB98 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
@@ -443,6 +455,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		ED10966029A4FE68002AFA43 /* KeychainSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = ED10965F29A4FE68002AFA43 /* XCRemoteSwiftPackageReference "keychain-swift" */;
+			productName = KeychainSwift;
+		};
 		EDEAA00B29940425006DDB98 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = EDEAA00A29940424006DDB98 /* XCRemoteSwiftPackageReference "SnapKit" */;

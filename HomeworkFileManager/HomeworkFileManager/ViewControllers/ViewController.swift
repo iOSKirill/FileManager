@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import KeychainSwift
 
 //MARK: - Enum -
 
@@ -32,6 +33,7 @@ class ViewController: UIViewController {
     //MARK: - Outlet and Variables -
     
     let fileManager = FileManager.default
+    let keyChain = KeychainSwift()
     let imagePicker = UIImagePickerController()
     var addChooseAnButton = UIBarButtonItem()
     var addCellSelectionButton = UIBarButtonItem()
@@ -86,10 +88,10 @@ class ViewController: UIViewController {
     }()
     
     //MARK: - Method -
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+ 
         checkingFilesInDocuments()
         setupConstraint()
         configureItems()
@@ -140,6 +142,7 @@ class ViewController: UIViewController {
 
     //Custom Navigation Bar
     func configureItems() {
+        navigationItem.title = "\(currentCatalogURL.lastPathComponent.description)"
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         
         let chooseAnButton : UIButton = UIButton.init(type: .custom)
@@ -221,7 +224,6 @@ class ViewController: UIViewController {
                 self.addAlertDirectoryError()
                 return
             }
-            
             let newFolder = self.currentCatalogURL.appending(path: nameCatalog)
             try? self.fileManager.createDirectory(at: newFolder, withIntermediateDirectories: false)
             let folderFile = File(type: .folder, url: newFolder)
@@ -272,6 +274,59 @@ class ViewController: UIViewController {
         alertActions.addAction(cancelButton)
         present(alertActions, animated: true)
     }
+    
+    //Add Alert Set Password
+    func addAlertSecurity() {
+        let alertSecurity = UIAlertController(title: "Security", message: "Do you want to set a password?", preferredStyle: .alert)
+        let setPasswordButton = UIAlertAction(title: "Set", style: .default) { _ in
+            guard let password = alertSecurity.textFields?.first?.text, !password.isEmpty else { return }
+            self.keyChain.set(password, forKey: "Password")
+        }
+        let cancelButton = UIAlertAction(title: "Cancel", style: .destructive)
+        alertSecurity.addTextField { textField in
+            textField.placeholder = "Password"
+        }
+        alertSecurity.addAction(setPasswordButton)
+        alertSecurity.addAction(cancelButton)
+        alertSecurity.preferredAction = setPasswordButton
+        present(alertSecurity, animated: true)
+    }
+    
+    //Add Alert Access denied
+    func addAlertAccessDenied() {
+        let alertAccessDenied = UIAlertController(title: "Access denied", message: "Your password?", preferredStyle: .alert)
+        let okButton = UIAlertAction(title: "OK", style: .default) { _ in
+            guard let password = alertAccessDenied.textFields?.first?.text, !password.isEmpty, password == self.keyChain.get("Password") else {
+                self.errorPassword()
+                return
+            }
+        }
+        alertAccessDenied.addTextField { textField in
+            textField.placeholder = "Password"
+            textField.isSecureTextEntry = true
+        }
+        alertAccessDenied.addAction(okButton)
+        present(alertAccessDenied, animated: true)
+    }
+    
+    //Add Alert Error Password
+    func errorPassword() {
+        let alertErrorPassword = UIAlertController(title: "Error", message: "Password is wrong", preferredStyle: .alert)
+        let okButton = UIAlertAction(title: "OK", style: .default) { _ in
+            self.addAlertAccessDenied()
+        }
+        alertErrorPassword.addAction(okButton)
+        present(alertErrorPassword, animated: true)
+    }
+    
+    //Checking if the password is in memory
+    func checkingPasswordInMemory() {
+        guard let passwordKeyChain = keyChain.get("Password"), !passwordKeyChain.isEmpty else {
+            addAlertSecurity()
+            return
+        }
+        addAlertAccessDenied()
+    }
 }
 
 
@@ -321,9 +376,20 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         
         switch selectionCellsState {
         case .off:
+            tableView.deselectRow(at: indexPath, animated: true)
             if indexPath.section == 0 {
                 let imageVC = ImageViewController(nibName: ImageViewController.key, bundle: nil)
-                imageVC.imageCatalog.image = UIImage(contentsOfFile: fileCatalog.filter({ $0.type == .image})[indexPath.row].url.path)
+                
+                guard let firstImage = UIImage(contentsOfFile: fileCatalog.filter({ $0.type == .image })[indexPath.row].url.path) else { return }
+                imageVC.imageArray.insert(firstImage, at: 0)
+                let firstUrl = fileCatalog.filter({ $0.type == .image })[indexPath.row].url
+                
+                fileCatalog.forEach { i in
+                    if let fullImage = UIImage(contentsOfFile: i.url.path), i.url != firstUrl {
+                        imageVC.imageArray.append(fullImage)
+                    }
+                }
+                
                 present(imageVC, animated: true)
             } else {
                 guard let folderVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MainCatalog") as? ViewController else { return }
@@ -417,9 +483,20 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch selectionCellsState {
         case .off:
+            collectionView.deselectItem(at: indexPath, animated: false)
             if indexPath.section == 0 {
                 let imageVC = ImageViewController(nibName: ImageViewController.key, bundle: nil)
-                imageVC.imageCatalog.image = UIImage(contentsOfFile: fileCatalog.filter({ $0.type == .image})[indexPath.row].url.path)
+                
+                guard let firstImage = UIImage(contentsOfFile: fileCatalog.filter({ $0.type == .image })[indexPath.row].url.path) else { return }
+                imageVC.imageArray.insert(firstImage, at: 0)
+                let firstUrl = fileCatalog.filter({ $0.type == .image })[indexPath.row].url
+                
+                fileCatalog.forEach { i in
+                    if let fullImage = UIImage(contentsOfFile: i.url.path), i.url != firstUrl {
+                        imageVC.imageArray.append(fullImage)
+                    }
+                }
+                
                 present(imageVC, animated: true)
             } else {
                 guard let folderVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MainCatalog") as? ViewController else { return }
