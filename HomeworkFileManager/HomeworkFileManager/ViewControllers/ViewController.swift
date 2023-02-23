@@ -303,6 +303,7 @@ class ViewController: UIViewController {
         }
         alertAccessDenied.addTextField { textField in
             textField.placeholder = "Password"
+            textField.isSecureTextEntry = true
         }
         alertAccessDenied.addAction(okButton)
         present(alertAccessDenied, animated: true)
@@ -378,8 +379,18 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             tableView.deselectRow(at: indexPath, animated: true)
             if indexPath.section == 0 {
                 let imageVC = ImageViewController(nibName: ImageViewController.key, bundle: nil)
-                imageVC.imageCatalog.image = UIImage(contentsOfFile: fileCatalog.filter({ $0.type == .image})[indexPath.row].url.path)
-                    present(imageVC, animated: true)
+                
+                guard let firstImage = UIImage(contentsOfFile: fileCatalog.filter({ $0.type == .image })[indexPath.row].url.path) else { return }
+                imageVC.imageArray.insert(firstImage, at: 0)
+                let firstUrl = fileCatalog.filter({ $0.type == .image })[indexPath.row].url
+                
+                for i in 0..<fileCatalog.filter({ $0.type == .image }).count {
+                    if let fullImage = UIImage(contentsOfFile: fileCatalog.filter({ $0.type == .image })[i].url.path), fileCatalog.filter({ $0.type == .image })[i].url != firstUrl {
+                        imageVC.imageArray.append(fullImage)
+                    }
+                }
+                
+                present(imageVC, animated: true)
             } else {
                 guard let folderVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MainCatalog") as? ViewController else { return }
                 folderVC.currentCatalogURL = fileCatalog.filter({ $0.type == .folder})[indexPath.row].url
@@ -475,7 +486,17 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
             collectionView.deselectItem(at: indexPath, animated: false)
             if indexPath.section == 0 {
                 let imageVC = ImageViewController(nibName: ImageViewController.key, bundle: nil)
-                imageVC.imageCatalog.image = UIImage(contentsOfFile: fileCatalog.filter({ $0.type == .image})[indexPath.row].url.path)
+                
+                guard let firstImage = UIImage(contentsOfFile: fileCatalog.filter({ $0.type == .image })[indexPath.row].url.path) else { return }
+                imageVC.imageArray.insert(firstImage, at: 0)
+                let firstUrl = fileCatalog.filter({ $0.type == .image })[indexPath.row].url
+                
+                for i in 0..<fileCatalog.filter({ $0.type == .image }).count {
+                    if let fullImage = UIImage(contentsOfFile: fileCatalog.filter({ $0.type == .image })[i].url.path), fileCatalog.filter({ $0.type == .image })[i].url != firstUrl {
+                        imageVC.imageArray.append(fullImage)
+                    }
+                }
+                
                 present(imageVC, animated: true)
             } else {
                 guard let folderVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MainCatalog") as? ViewController else { return }

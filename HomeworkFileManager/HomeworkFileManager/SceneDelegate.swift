@@ -19,7 +19,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.window?.makeKeyAndVisible()
         window?.backgroundColor = UIColor(red: 55/255, green: 100/255, blue: 193/255, alpha: 1)
         viewController.checkingPasswordInMemory()
-        
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
