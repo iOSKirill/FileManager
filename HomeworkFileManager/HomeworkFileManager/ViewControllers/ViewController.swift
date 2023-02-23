@@ -384,8 +384,8 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
                 imageVC.imageArray.insert(firstImage, at: 0)
                 let firstUrl = fileCatalog.filter({ $0.type == .image })[indexPath.row].url
                 
-                for i in 0..<fileCatalog.filter({ $0.type == .image }).count {
-                    if let fullImage = UIImage(contentsOfFile: fileCatalog.filter({ $0.type == .image })[i].url.path), fileCatalog.filter({ $0.type == .image })[i].url != firstUrl {
+                fileCatalog.forEach { i in
+                    if let fullImage = UIImage(contentsOfFile: i.url.path), i.url != firstUrl {
                         imageVC.imageArray.append(fullImage)
                     }
                 }
@@ -491,8 +491,8 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
                 imageVC.imageArray.insert(firstImage, at: 0)
                 let firstUrl = fileCatalog.filter({ $0.type == .image })[indexPath.row].url
                 
-                for i in 0..<fileCatalog.filter({ $0.type == .image }).count {
-                    if let fullImage = UIImage(contentsOfFile: fileCatalog.filter({ $0.type == .image })[i].url.path), fileCatalog.filter({ $0.type == .image })[i].url != firstUrl {
+                fileCatalog.forEach { i in
+                    if let fullImage = UIImage(contentsOfFile: i.url.path), i.url != firstUrl {
                         imageVC.imageArray.append(fullImage)
                     }
                 }
