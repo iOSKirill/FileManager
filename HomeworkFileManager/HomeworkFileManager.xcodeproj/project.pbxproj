@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		ED10966129A4FE68002AFA43 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = ED10966029A4FE68002AFA43 /* KeychainSwift */; };
+		ED7BB4E429A954F4006C529F /* Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED7BB4E329A954F4006C529F /* Manager.swift */; };
 		EDD17CA9299E55FD00412ED5 /* CollectionCatalogFolderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD17CA7299E55FD00412ED5 /* CollectionCatalogFolderCell.swift */; };
 		EDD17CAA299E55FD00412ED5 /* CollectionCatalogFolderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EDD17CA8299E55FD00412ED5 /* CollectionCatalogFolderCell.xib */; };
 		EDD17CAD299E5EA200412ED5 /* CollectionCatalogImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD17CAB299E5EA200412ED5 /* CollectionCatalogImageCell.swift */; };
@@ -28,6 +29,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		ED7BB4E329A954F4006C529F /* Manager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Manager.swift; path = HomeworkFileManager/ViewControllers/Manager.swift; sourceTree = SOURCE_ROOT; };
 		EDD17CA7299E55FD00412ED5 /* CollectionCatalogFolderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionCatalogFolderCell.swift; sourceTree = "<group>"; };
 		EDD17CA8299E55FD00412ED5 /* CollectionCatalogFolderCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CollectionCatalogFolderCell.xib; sourceTree = "<group>"; };
 		EDD17CAB299E5EA200412ED5 /* CollectionCatalogImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionCatalogImageCell.swift; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 			isa = PBXGroup;
 			children = (
 				EDEA9FF429937EB8006DDB98 /* ViewController.swift */,
+				ED7BB4E329A954F4006C529F /* Manager.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -216,6 +219,7 @@
 				EDEA9FF129937EB8006DDB98 /* AppDelegate.swift in Sources */,
 				EDEA9FF329937EB8006DDB98 /* SceneDelegate.swift in Sources */,
 				EDEA0286299A1EFF00F4201E /* ImageViewController.swift in Sources */,
+				ED7BB4E429A954F4006C529F /* Manager.swift in Sources */,
 				EDEAA00629940058006DDB98 /* CatalogFolderCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
