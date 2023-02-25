@@ -8,9 +8,24 @@
 import Foundation
 import UIKit
 
+//MARK: - Struct -
+
+struct File {
+    var type: CatalogCellType
+    var url: URL
+}
+
+//MARK: - Enum -
+
+enum CatalogCellType: String {
+    case image = "Images"
+    case folder = "Folders"
+}
+
 //MARK: - Protocol -
 
 protocol ManagerProtocol {
+    
     var fileManager: FileManager { get set }
     var fileCatalog: [File] { get set }
     var arrayURlDelete: [URL] { get set }
@@ -18,26 +33,23 @@ protocol ManagerProtocol {
     
     func checkingFilesInDocuments()
     func deleteSelectedSell(_ tableView: UITableView, _ collectionView: UICollectionView)
-    func createNewCatalog(nameCatalog: String, alertDirectoryError: Void)
+    func createNewCatalog(nameCatalog: String, alertDirectoryError: () -> Void )
     func createNewImage(info: [UIImagePickerController.InfoKey : Any])
     func sectionEntry(section: Int) -> Int
     func sectionTitle(section: Int) -> String
-    func displayInfoInCells(tableView: UITableView, indexPath: IndexPath) -> UITableViewCell
+    func displayInfoInCellsTableView(tableView: UITableView, indexPath: IndexPath) -> UITableViewCell
+    func displayInfoInCellsCollectionView(collectionView: UICollectionView, indexPath: IndexPath) -> UICollectionViewCell
     func moveToSelectedImageCell(indexPath: IndexPath,imageVC: ImageViewController)
     func moveToSelectedFolderCell(indexPath: IndexPath,folderVC: ViewController)
     func deleteImageCells(indexPath: IndexPath, addDeleteSelectedSellButton: UIBarButtonItem)
     func deleteFolderCells(indexPath: IndexPath, addDeleteSelectedSellButton: UIBarButtonItem)
     func deselectImageCells(indexPath: IndexPath, addDeleteSelectedSellButton: UIBarButtonItem)
     func deselectFolderCells(indexPath: IndexPath, addDeleteSelectedSellButton: UIBarButtonItem)
-    
-    func printHello()
 }
 
 //MARK: - Class -
 
 class Manager: ManagerProtocol {
-    
-    
     
     //MARK: - Properties -
     
@@ -76,15 +88,27 @@ class Manager: ManagerProtocol {
     }
     
     //Creating a new catalog
-    func createNewCatalog(nameCatalog: String, alertDirectoryError: Void) {
-        guard fileCatalog.contains(where: { $0.url.lastPathComponent == nameCatalog }) else {
-            alertDirectoryError
+    func createNewCatalog(nameCatalog: String, alertDirectoryError: () -> Void) {
+        guard !fileCatalog.contains(where: { $0.url.lastPathComponent == nameCatalog }) else {
+            alertDirectoryError()
             return
         }
-        let newFolder = self.currentCatalogURL.appending(path: nameCatalog)
+        let newFolder = currentCatalogURL.appending(path: nameCatalog)
         try? fileManager.createDirectory(at: newFolder, withIntermediateDirectories: false)
         let folderFile = File(type: .folder, url: newFolder)
         fileCatalog.append(folderFile)
+    }
+    
+    //Creating a new image
+    func createNewImage(info: [UIImagePickerController.InfoKey : Any]) {
+        guard let imageURL = info[.imageURL] as? URL,
+        let editImage = info[.editedImage] as? UIImage else { return }
+        
+        let newImageURL = currentCatalogURL.appending(path: imageURL.lastPathComponent)
+        let data = editImage.jpegData(compressionQuality: 1)
+        try? data?.write(to: newImageURL)
+        let imageFile = File(type: .image, url: newImageURL)
+        self.fileCatalog.append(imageFile)
     }
     
     //Split photos and folders into sections
@@ -108,14 +132,27 @@ class Manager: ManagerProtocol {
         }
     }
     
-    //Display images and folders in cells
-    func displayInfoInCells(tableView: UITableView, indexPath: IndexPath) -> UITableViewCell {
+    //Display images and folders in cells TableView
+    func displayInfoInCellsTableView(tableView: UITableView, indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: CatalogImageCell.key, for: indexPath) as? CatalogImageCell else { return UITableViewCell() }
             cell.thumbnailImage.image = UIImage(contentsOfFile: fileCatalog.filter({ $0.type == .image})[indexPath.row].url.path)?.preparingThumbnail(of: .init(width: 50, height: 50))
             return cell
         } else {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: CatalogFolderCell.key, for: indexPath) as? CatalogFolderCell else { return UITableViewCell() }
+            cell.nameCatalogLabel.text = fileCatalog.filter({ $0.type == .folder})[indexPath.row].url.lastPathComponent
+            return cell
+        }
+    }
+    
+    //Display images and folders in cells CollectionView
+    func displayInfoInCellsCollectionView(collectionView: UICollectionView, indexPath: IndexPath) -> UICollectionViewCell {
+        if indexPath.section == 0 {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionCatalogImageCell.key, for: indexPath) as? CollectionCatalogImageCell else { return UICollectionViewCell () }
+            cell.thumbnailImage.image = UIImage(contentsOfFile: fileCatalog.filter({ $0.type == .image})[indexPath.row].url.path)
+            return cell
+        } else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionCatalogFolderCell.key, for: indexPath) as? CollectionCatalogFolderCell else { return UICollectionViewCell () }
             cell.nameCatalogLabel.text = fileCatalog.filter({ $0.type == .folder})[indexPath.row].url.lastPathComponent
             return cell
         }
@@ -136,7 +173,7 @@ class Manager: ManagerProtocol {
     
     //Open ViewController
     func moveToSelectedFolderCell(indexPath: IndexPath,folderVC: ViewController) {
-        folderVC.fileManager2.currentCatalogURL = fileCatalog.filter({ $0.type == .folder})[indexPath.row].url
+        folderVC.fileManager.currentCatalogURL = fileCatalog.filter({ $0.type == .folder})[indexPath.row].url
         folderVC.title = fileCatalog.filter({ $0.type == .folder})[indexPath.row].url.lastPathComponent
     }
     
@@ -172,19 +209,4 @@ class Manager: ManagerProtocol {
         addDeleteSelectedSellButton.isEnabled = arrayURlDelete.count != 0
     }
     
-    //Creating a new image
-    func createNewImage(info: [UIImagePickerController.InfoKey : Any]) {
-        guard let imageURL = info[.imageURL] as? URL,
-        let editImage = info[.editedImage] as? UIImage else { return }
-        
-        let newImageURL = currentCatalogURL.appending(path: imageURL.lastPathComponent)
-        let data = editImage.jpegData(compressionQuality: 1)
-        try? data?.write(to: newImageURL)
-        let imageFile = File(type: .image, url: newImageURL)
-        self.fileCatalog.append(imageFile)
-    }
-    
-    func printHello() {
-        print("Hello")
-    }
 }
