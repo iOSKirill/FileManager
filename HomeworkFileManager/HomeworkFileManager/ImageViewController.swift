@@ -14,6 +14,7 @@ class ImageViewController: UIViewController {
     
     static let key = "ImageViewController"
     var imageArray: [UIImage] = []
+    var imageView = UIImageView()
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var stackView: UIStackView!
@@ -30,7 +31,7 @@ class ImageViewController: UIViewController {
         scrollView.delegate = self
         pageControl.numberOfPages = imageArray.count
         imageArray.forEach { image in
-            let imageView = UIImageView()
+            imageView = UIImageView()
             imageView.contentMode = .scaleAspectFit
             imageView.image = image
             stackView.addArrangedSubview(imageView)
@@ -58,5 +59,7 @@ extension ImageViewController: UIScrollViewDelegate {
         stackView
     }
     
+
+
 }
 

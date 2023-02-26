@@ -56,7 +56,7 @@ class Manager: ManagerProtocol {
     var fileManager: FileManager = .default
     var fileCatalog: [File] = []
     var arrayURlDelete: [URL] = []
-    lazy var currentCatalogURL: URL = {
+    lazy var currentCatalogURL: URL = { [weak self] in 
             fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
     }()
     
