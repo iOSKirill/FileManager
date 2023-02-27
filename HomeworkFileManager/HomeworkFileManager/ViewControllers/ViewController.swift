@@ -179,9 +179,11 @@ class ViewController: UIViewController {
     //Add Alert with creating a new catalog
     func addAlertCreateNewCatalog() {
         let alertNewCatalog = UIAlertController(title: "Create a new catalog", message: "Print a name", preferredStyle: .alert)
-        let okButton = UIAlertAction(title: "OK", style: .default) { [self] _ in
+        let okButton = UIAlertAction(title: "OK", style: .default) { _ in
             guard let nameCatalog = alertNewCatalog.textFields?.first?.text?.trimmingCharacters(in: NSCharacterSet.whitespaces), !nameCatalog.isEmpty else { return }
-            self.fileManager.createNewCatalog(nameCatalog: nameCatalog, alertDirectoryError: self.addAlertDirectoryError)
+            if !self.fileManager.createNewCatalog(nameCatalog: nameCatalog) {
+                self.addAlertDirectoryError()
+            }
             self.tableView.reloadData()
             self.collectionView.reloadData()
         }
@@ -198,7 +200,7 @@ class ViewController: UIViewController {
     }
     
     //Add Alert with Directory Error
-    func addAlertDirectoryError() -> Void {
+    func addAlertDirectoryError() {
         let alertError = UIAlertController(title: "Error", message: "Directory exists", preferredStyle: .alert)
         let okButton = UIAlertAction(title: "OK", style: .default)
         alertError.addAction(okButton)
@@ -305,7 +307,15 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        fileManager.displayInfoInCellsTableView(tableView: tableView, indexPath: indexPath)
+        if indexPath.section == 0 {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: CatalogImageCell.key, for: indexPath) as? CatalogImageCell else { return UITableViewCell() }
+            cell.thumbnailImage.image = UIImage(contentsOfFile: fileManager.displayImageInCellsTableView()[indexPath.row].url.path)?.preparingThumbnail(of: .init(width: 50, height: 50))
+            return cell
+        } else {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: CatalogFolderCell.key, for: indexPath) as? CatalogFolderCell else { return UITableViewCell() }
+            cell.nameCatalogLabel.text = fileManager.displayFolderInCellsTableView()[indexPath.row].url.lastPathComponent
+            return cell
+        }
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -315,45 +325,51 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             tableView.deselectRow(at: indexPath, animated: true)
             if indexPath.section == 0 {
                 let imageVC = ImageViewController(nibName: ImageViewController.key, bundle: nil)
-                fileManager.moveToSelectedImageCell(indexPath: indexPath, imageVC: imageVC)
+                guard let firstImage = UIImage(contentsOfFile:fileManager.displayImageInCellsTableView()[indexPath.row].url.path) else { return }
+                imageVC.imageArray.insert(firstImage, at: 0)
+                let firstUrl = fileManager.displayImageInCellsTableView()[indexPath.row].url
+                
+                fileManager.fileCatalog.forEach { i in
+                    if let fullImage = UIImage(contentsOfFile: i.url.path), i.url != firstUrl {
+                        imageVC.imageArray.append(fullImage)
+                    }
+                }
                 present(imageVC, animated: true)
             } else {
                 guard let folderVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MainCatalog") as? ViewController else { return }
-                fileManager.moveToSelectedFolderCell(indexPath: indexPath, folderVC: folderVC)
+                folderVC.fileManager.currentCatalogURL = fileManager.displayFolderInCellsTableView()[indexPath.row].url
+                folderVC.title = fileManager.displayFolderInCellsTableView()[indexPath.row].url.lastPathComponent
                 folderVC.stateSegmentedControl = stateSegmentedControl
                 navigationController?.pushViewController(folderVC, animated: true)
             }
         case .on:
             //Add Cell Index
-            if indexPath.section == 0 {
-                selectedCellsArray.append(indexPath)
-                fileManager.deleteImageCells(indexPath: indexPath, addDeleteSelectedSellButton: addDeleteSelectedSellButton)
-                collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .bottom)
-
-            } else {
-                selectedCellsArray.append(indexPath)
-                fileManager.deleteFolderCells(indexPath: indexPath, addDeleteSelectedSellButton: addDeleteSelectedSellButton)
-                collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .bottom)
-            }
+            fileManager.deleteCells(indexPath: indexPath)
+            selectedCellsArray.append(indexPath)
+            addDeleteSelectedSellButton.isEnabled = fileManager.arrayURlDelete.count > 0
+            collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .bottom)
         }
     }
     
     //Delete Сell Index
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        if indexPath.section == 0 {
-            fileManager.deselectImageCells(indexPath: indexPath, addDeleteSelectedSellButton: addDeleteSelectedSellButton)
-            collectionView.deselectItem(at: indexPath, animated: true)
-        } else {
-            fileManager.deselectFolderCells(indexPath: indexPath, addDeleteSelectedSellButton: addDeleteSelectedSellButton)
-            collectionView.deselectItem(at: indexPath, animated: true)
-        }
+        fileManager.deselectCells(indexPath: indexPath)
+        addDeleteSelectedSellButton.isEnabled = fileManager.arrayURlDelete.count != 0
+        collectionView.deselectItem(at: indexPath, animated: true)
     }
 }
 
 extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        fileManager.createNewImage(info: info)
+        guard let imageURL = info[.imageURL] as? URL,
+        let editImage = info[.editedImage] as? UIImage else { return }
+        
+        let newImageURL = fileManager.createNewImage(url: imageURL)
+        let data = editImage.jpegData(compressionQuality: 1)
+        try? data?.write(to: newImageURL)
+        fileManager.appendImageIFileCatalog(url: newImageURL)
+        
         self.tableView.reloadData()
         self.collectionView.reloadData()
         dismiss(animated: true)
@@ -371,7 +387,15 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        fileManager.displayInfoInCellsCollectionView(collectionView: collectionView, indexPath: indexPath)
+        if indexPath.section == 0 {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionCatalogImageCell.key, for: indexPath) as? CollectionCatalogImageCell else { return UICollectionViewCell () }
+            cell.thumbnailImage.image = UIImage(contentsOfFile: fileManager.displayImageInCellsTableView()[indexPath.row].url.path)?.preparingThumbnail(of: .init(width: 50, height: 50))
+            return cell
+        } else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionCatalogFolderCell.key, for: indexPath) as? CollectionCatalogFolderCell else { return UICollectionViewCell () }
+            cell.nameCatalogLabel.text = fileManager.displayFolderInCellsTableView()[indexPath.row].url.lastPathComponent
+            return cell
+        }
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -380,37 +404,36 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
             collectionView.deselectItem(at: indexPath, animated: false)
             if indexPath.section == 0 {
                 let imageVC = ImageViewController(nibName: ImageViewController.key, bundle: nil)
-                fileManager.moveToSelectedImageCell(indexPath: indexPath, imageVC: imageVC)
+                guard let firstImage = UIImage(contentsOfFile:fileManager.displayImageInCellsTableView()[indexPath.row].url.path) else { return }
+                imageVC.imageArray.insert(firstImage, at: 0)
+                let firstUrl = fileManager.displayImageInCellsTableView()[indexPath.row].url
+                
+                fileManager.fileCatalog.forEach { i in
+                    if let fullImage = UIImage(contentsOfFile: i.url.path), i.url != firstUrl {
+                        imageVC.imageArray.append(fullImage)
+                    }
+                }
                 present(imageVC, animated: true)
             } else {
                 guard let folderVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MainCatalog") as? ViewController else { return }
-                fileManager.moveToSelectedFolderCell(indexPath: indexPath, folderVC: folderVC)
+                folderVC.fileManager.currentCatalogURL = fileManager.displayFolderInCellsTableView()[indexPath.row].url
+                folderVC.title = fileManager.displayFolderInCellsTableView()[indexPath.row].url.lastPathComponent
                 folderVC.stateSegmentedControl = stateSegmentedControl
                 navigationController?.pushViewController(folderVC, animated: true)
             }
         case .on:
             //Add Cell Index
-            if indexPath.section == 0 {
-                selectedCellsArray.append(indexPath)
-                fileManager.deleteImageCells(indexPath: indexPath, addDeleteSelectedSellButton: addDeleteSelectedSellButton)
-                tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
-            } else {
-                selectedCellsArray.append(indexPath)
-                fileManager.deleteFolderCells(indexPath: indexPath, addDeleteSelectedSellButton: addDeleteSelectedSellButton)
-                tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
-            }
+            fileManager.deleteCells(indexPath: indexPath)
+            selectedCellsArray.append(indexPath)
+            addDeleteSelectedSellButton.isEnabled = fileManager.arrayURlDelete.count > 0
+            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        if indexPath.section == 0 {
-            fileManager.deselectImageCells(indexPath: indexPath, addDeleteSelectedSellButton: addDeleteSelectedSellButton)
-            tableView.deselectRow(at: indexPath, animated: true)
-        } else {
-
-            fileManager.deselectFolderCells(indexPath: indexPath, addDeleteSelectedSellButton: addDeleteSelectedSellButton)
-            tableView.deselectRow(at: indexPath, animated: true)
-        }
+        fileManager.deselectCells(indexPath: indexPath)
+        addDeleteSelectedSellButton.isEnabled = fileManager.arrayURlDelete.count != 0
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

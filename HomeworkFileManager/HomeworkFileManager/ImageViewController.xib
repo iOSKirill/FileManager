@@ -14,7 +14,6 @@
                 <outlet property="scrollView" destination="hp5-mP-q7Y" id="ezN-dF-PZo"/>
                 <outlet property="stackView" destination="0eW-CV-qlB" id="6tW-6z-OJg"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
-                <outlet property="viewQ" destination="60t-pO-2H9" id="gxp-jP-gi9"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>

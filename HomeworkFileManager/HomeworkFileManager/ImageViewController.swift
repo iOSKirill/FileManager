@@ -20,30 +20,16 @@ class ImageViewController: UIViewController {
     @IBOutlet weak var stackView: UIStackView!
     @IBOutlet weak var pageControl: UIPageControl!
     
-    @IBOutlet weak var viewQ: UIView!
     //MARK: - Method -
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupImage()
-        
-    
     }
-    
-    @objc func handleTap(_ sender: UITapGestureRecognizer) {
-//        let zoomVC = ImageZoomViewController(nibName: ImageZoomViewController.key, bundle: nil)
-        let zoomVC = Bundle.main.loadNibNamed(ImageZoomViewController.key, owner: self, options: nil)!.first as! ImageZoomViewController
-        self.addChild(zoomVC)
-        zoomVC.view.frame = view.frame
-        zoomVC.imageView.image = imageArray[0]
-        stackView.addSubview(zoomVC.view)
-        zoomVC.didMove(toParent: self)
-    }
-    
+
     func setupImage() {
         scrollView.delegate = self
-        let tap = UIGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
-        view.addGestureRecognizer(tap)
+        scrollView.isPagingEnabled = true
         pageControl.numberOfPages = imageArray.count
         imageArray.forEach { image in
             imageView = UIImageView()
@@ -71,11 +57,8 @@ extension ImageViewController: UIScrollViewDelegate {
         pageControl.currentPage = page
     }
     
-//    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-//        stackView
-//    }
-    
-
-
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        stackView
+    }
 }
 
