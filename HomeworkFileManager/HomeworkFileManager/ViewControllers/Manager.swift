@@ -31,10 +31,9 @@ protocol ManagerProtocol {
     var currentCatalogURL: URL { get set }
     
     func checkingFilesInDocuments()
-    func deleteSelectedSell(_ tableView: UITableView, _ collectionView: UICollectionView)
+    func deleteSelectedSell()
     func createNewCatalog(nameCatalog: String ) -> Bool
-    func createNewImage(url: URL) -> URL
-    func appendImageIFileCatalog(url: URL)
+    func createNewImage(url: URL, image: UIImage)
     func sectionEntry(section: Int) -> Int
     func sectionTitle(section: Int) -> String
     func displayImageInCellsTableView() -> [File]
@@ -69,7 +68,7 @@ class Manager: ManagerProtocol {
     }
     
     //Delete Selection Cell
-    func deleteSelectedSell(_ tableView: UITableView, _ collectionView: UICollectionView) {
+    func deleteSelectedSell() {
         fileCatalog = fileCatalog.filter{ !arrayURlDelete.contains($0.url) }
           for url in arrayURlDelete {
               do {
@@ -78,8 +77,6 @@ class Manager: ManagerProtocol {
                   fatalError("Error")
               }
               arrayURlDelete = arrayURlDelete.filter({ $0 != url })
-              tableView.reloadData()
-              collectionView.reloadData()
           }
     }
     
@@ -96,12 +93,11 @@ class Manager: ManagerProtocol {
     }
     
     //Creating a new image
-    func createNewImage(url: URL) -> URL {
-        currentCatalogURL.appending(path: url.lastPathComponent)
-    }
-    
-    func appendImageIFileCatalog(url: URL) {
-        let imageFile = File(type: .image, url: url)
+    func createNewImage(url: URL, image: UIImage) {
+        let newImageURL = currentCatalogURL.appending(path: url.lastPathComponent)
+        let data = image.jpegData(compressionQuality: 1)
+        try? data?.write(to: newImageURL)
+        let imageFile = File(type: .image, url: newImageURL)
         self.fileCatalog.append(imageFile)
     }
     

@@ -163,7 +163,9 @@ class ViewController: UIViewController {
         addChooseAnButton.isEnabled = true
         tableView.allowsMultipleSelection = false
         collectionView.allowsMultipleSelection = false
-        fileManager.deleteSelectedSell(tableView, collectionView)
+        fileManager.deleteSelectedSell()
+        tableView.reloadData()
+        collectionView.reloadData()
     }
     
     //Cell Selection
@@ -364,12 +366,7 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let imageURL = info[.imageURL] as? URL,
         let editImage = info[.editedImage] as? UIImage else { return }
-        
-        let newImageURL = fileManager.createNewImage(url: imageURL)
-        let data = editImage.jpegData(compressionQuality: 1)
-        try? data?.write(to: newImageURL)
-        fileManager.appendImageIFileCatalog(url: newImageURL)
-        
+        fileManager.createNewImage(url: imageURL, image: editImage)
         self.tableView.reloadData()
         self.collectionView.reloadData()
         dismiss(animated: true)
